@@ -79,8 +79,8 @@ class BnB:
 		min2 = self.INF
 
 		for i in range(self.n):
-			if p.visited[i] == False and min1 > self.dist[i][p.s]:
-				min1 = self.dist[i][p.s]
+			if p.visited[i] == False and min1 > self.dist[i][p.start]:
+				min1 = self.dist[i][p.start]
 		ret = ret + min1
 
 
@@ -129,7 +129,7 @@ class BnB:
 					if tmp.visited[i] == False:
 						p = i
 						break
-				ans = tmp.sumv + self.dist[tmp.s][p] + self.dist[p][tmp.e]
+				ans = tmp.sumv + self.dist[tmp.start][p] + self.dist[p][tmp.e]
 				if ans < opt_so_far:
 					opt_so_far = ans
 					printlist = tmp.listc
@@ -152,7 +152,7 @@ class BnB:
 			for i in range(self.n):
 				if tmp.visited[i] == False:
 					next_node = Node(self.n)
-					next_node.start = tmp.s
+					next_node.start = tmp.start
 					next_node.sumv = tmp.sumv + self.dist[tmp.e][i]
 					next_node.e = i
 					next_node.k = tmp.k + 1
@@ -210,7 +210,7 @@ class BnB:
 
 if __name__ == "__main__":
 	#instance_list = ['Cincinnati','UKansasState','Berlin','Atlanta','Boston','Champaign','Denver','NYC','Philadelphia','Roanoke','SanFrancisco','Toronto','UMissouri']
-	instance_list = ['Berlin']
+	instance_list = ['Cincinnati']
 	for item in instance_list:
 		print('=========================  Running:' + item)
 		test = BnB(item,0)
