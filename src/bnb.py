@@ -1,6 +1,6 @@
 from queue import LifoQueue
 import time
-import adjMat
+import src.adjMat as adjMat
 
 
 
