@@ -4,6 +4,7 @@ from scipy.spatial.distance import pdist
 from scipy.spatial.distance import squareform
 import numpy as np
 
+from MST_Approx import *
 from RLS import RLS
 
 def read_data(filename):
@@ -38,8 +39,8 @@ def write_trace(filename, trace):
 
 def BNB(distance_matrix, time):
 	return None, None, None
-def MST(distance_matrix, time):
-	return None, None, None
+'''def MST(distance_matrix, time):
+	return None, None, None'''
 def SA(distance_matrix, time, seed):
 	return None, None, None
 
@@ -59,7 +60,7 @@ if __name__ == "__main__":
 	if args.algorithm == 'BnB':
 		best_sol, best_route, trace = BNB(distance_matrix, args.time)
 	elif args.algorithm == 'Approx':
-		best_sol, best_route, trace = MST(distance_matrix, args.time)
+		best_sol, best_route, trace = MST(distance_matrix, args.time, args.seed)
 	elif args.algorithm == 'LS1':
 		best_sol, best_route, trace = SA(distance_matrix, args.time, args.seed)
 		outname += '_{}'.format(args.seed)
