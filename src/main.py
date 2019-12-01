@@ -1,5 +1,6 @@
 import argparse
 import sys
+import os
 from scipy.spatial.distance import pdist
 from scipy.spatial.distance import squareform
 import numpy as np
@@ -35,12 +36,10 @@ def write_solution(filename, sol, route):
 def write_trace(filename, trace):
 	file = open(filename, 'w')
 	for row in trace:
-		file.write(str(row[0]) + ',' + str(int(row[1])) + '\n') 
+		file.write(str(np.round(row[0], 2)) + ',' + str(int(row[1])) + '\n') 
 
 def BNB(distance_matrix, time):
 	return None, None, None
-'''def MST(distance_matrix, time):
-	return None, None, None'''
 def SA(distance_matrix, time, seed):
 	return None, None, None
 
@@ -60,7 +59,7 @@ if __name__ == "__main__":
 	if args.algorithm == 'BnB':
 		best_sol, best_route, trace = BNB(distance_matrix, args.time)
 	elif args.algorithm == 'Approx':
-		best_sol, best_route, trace = MST(distance_matrix, args.time, args.seed)
+		best_sol, best_route, trace = MST(distance_matrix, args.time)
 	elif args.algorithm == 'LS1':
 		best_sol, best_route, trace = SA(distance_matrix, args.time, args.seed)
 		outname += '_{}'.format(args.seed)
@@ -74,8 +73,12 @@ if __name__ == "__main__":
 	# best_route = [1,2,3,4,5]
 	# trace = [[10, 1111], [50, 1100], [100, 1000]]
 
-	write_solution(outname+'.sol', best_sol, best_route)
-	write_trace(outname+'.trace', trace)
+	out_dir_path = 'output/'
+	if not os.path.exists(out_dir_path):
+		os.makedirs(out_dir_path)
+
+	write_solution(out_dir_path+outname+'.sol', best_sol, best_route)
+	write_trace(out_dir_path+outname+'.trace', trace)
 
 
 
