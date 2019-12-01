@@ -2,6 +2,9 @@ import argparse
 import sys
 from scipy.spatial.distance import pdist
 from scipy.spatial.distance import squareform
+import numpy as np
+
+from RLS import RLS
 
 def read_data(filename):
 	file = open(filename, 'r')
@@ -21,25 +24,23 @@ def read_data(filename):
 		y = float(line[2])
 		X.append([x, y])
 
-	return name, squareform(pdist(X, 'euclidean'))
+	return name, np.round(squareform(pdist(X, 'euclidean')) + 1e-9)
 
 def write_solution(filename, sol, route):
 	file = open(filename, 'w')
-	file.write(str(sol) + '\n')
+	file.write(str(int(sol)) + '\n')
 	file.write(','.join([str(v) for v in route])) 
 
 def write_trace(filename, trace):
 	file = open(filename, 'w')
 	for row in trace:
-		file.write(str(row[0]) + ',' + str(row[1]) + '\n') 
+		file.write(str(row[0]) + ',' + str(int(row[1])) + '\n') 
 
 def BNB(distance_matrix, time):
 	return None, None, None
 def MST(distance_matrix, time):
 	return None, None, None
 def SA(distance_matrix, time, seed):
-	return None, None, None
-def ILS(distance_matrix, time, seed):
 	return None, None, None
 
 
@@ -63,14 +64,14 @@ if __name__ == "__main__":
 		best_sol, best_route, trace = SA(distance_matrix, args.time, args.seed)
 		outname += '_{}'.format(args.seed)
 	elif args.algorithm == 'LS2':
-		best_sol, best_route, trace = ILS(distance_matrix, args.time, args.seed)
+		best_sol, best_route, trace = RLS(distance_matrix, args.time, args.seed)
 		outname += '_{}'.format(args.seed)
 	else:
 		sys.exit('wrong format!')
 
-	best_sol = 1000
-	best_route = [1,2,3,4,5]
-	trace = [[10, 1111], [50, 1100], [100, 1000]]
+	# best_sol = 1000
+	# best_route = [1,2,3,4,5]
+	# trace = [[10, 1111], [50, 1100], [100, 1000]]
 
 	write_solution(outname+'.sol', best_sol, best_route)
 	write_trace(outname+'.trace', trace)
