@@ -7,6 +7,7 @@ import numpy as np
 
 from MST_Approx import *
 from RLS import RLS
+from SA import SAa
 
 def read_data(filename):
 	file = open(filename, 'r')
@@ -36,7 +37,7 @@ def write_solution(filename, sol, route):
 def write_trace(filename, trace):
 	file = open(filename, 'w')
 	for row in trace:
-		file.write(str(np.round(row[0], 2)) + ',' + str(int(row[1])) + '\n') 
+		file.write('{:.2f},{}\n'.format(np.round(row[0], 2), int(row[1])))
 
 def BNB(distance_matrix, time):
 	return None, None, None
@@ -57,14 +58,14 @@ if __name__ == "__main__":
 	outname = '{}_{}_{}'.format(name, args.algorithm, args.time)
 
 	if args.algorithm == 'BnB':
-		best_sol, best_route, trace = BNB(distance_matrix, args.time)
+		best_sol, best_route, trace = BNB(distance_matrix, float(args.time))
 	elif args.algorithm == 'Approx':
-		best_sol, best_route, trace = MST(distance_matrix, args.time)
+		best_sol, best_route, trace = MST(distance_matrix, float(args.time))
 	elif args.algorithm == 'LS1':
-		best_sol, best_route, trace = SA(distance_matrix, args.time, args.seed)
+		best_sol, best_route, trace = SAa(distance_matrix, float(args.time), args.seed)
 		outname += '_{}'.format(args.seed)
 	elif args.algorithm == 'LS2':
-		best_sol, best_route, trace = RLS(distance_matrix, args.time, args.seed)
+		best_sol, best_route, trace = RLS(distance_matrix, float(args.time), args.seed)
 		outname += '_{}'.format(args.seed)
 	else:
 		sys.exit('wrong format!')
@@ -73,12 +74,13 @@ if __name__ == "__main__":
 	# best_route = [1,2,3,4,5]
 	# trace = [[10, 1111], [50, 1100], [100, 1000]]
 
-	out_dir_path = 'output/'
+	out_dir_path = 'output/{}/'.format(args.algorithm)
 	if not os.path.exists(out_dir_path):
 		os.makedirs(out_dir_path)
 
 	write_solution(out_dir_path+outname+'.sol', best_sol, best_route)
 	write_trace(out_dir_path+outname+'.trace', trace)
+
 
 
 

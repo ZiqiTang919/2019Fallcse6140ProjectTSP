@@ -42,14 +42,14 @@ def get_cost(matrix, path):
     total_cost = 0
     for i in range(0, len(path) - 1):
         #print(i, i+1)
-        total_cost += matrix[i][i+1]
+        total_cost += matrix[path[i]][path[i+1]]
 
-    total_cost = total_cost + matrix[len(path) - 1][0]
+    total_cost = total_cost + matrix[path[len(path) - 1]][path[0]]
     #print(len(path) - 1, 0)
     return total_cost
 
 
-def MST(distance_array, cutoff_time, seed):
+def MST(distance_array, cutoff_time, seed=None):
     start_time = time()
 
     tree = Graph_DFS()
