@@ -3,7 +3,6 @@ import sys
 from scipy.spatial.distance import pdist
 from scipy.spatial.distance import squareform
 import numpy as np
-import src.bnb as bnb
 
 from RLS import RLS
 
@@ -58,11 +57,7 @@ if __name__ == "__main__":
 	outname = '{}_{}_{}'.format(name, args.algorithm, args.time)
 
 	if args.algorithm == 'BnB':
-		bnb_obj = bnb.BnB(distance_matrix, args.time)
-		bnb_obj.main()
-		best_route = bnb_obj.best_route
-		best_sol = bnb_obj.best_solution
-		trace = bnb_obj.trace
+		best_sol, best_route, trace = BNB(distance_matrix, args.time)
 	elif args.algorithm == 'Approx':
 		best_sol, best_route, trace = MST(distance_matrix, args.time)
 	elif args.algorithm == 'LS1':
