@@ -7,7 +7,7 @@ import numpy as np
 
 from MST_Approx import *
 from RLS import RLS
-from SA import SAa
+from SA import SA
 
 def read_data(filename):
 	file = open(filename, 'r')
@@ -41,9 +41,6 @@ def write_trace(filename, trace):
 
 def BNB(distance_matrix, time):
 	return None, None, None
-def SA(distance_matrix, time, seed):
-	return None, None, None
-
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
@@ -62,7 +59,7 @@ if __name__ == "__main__":
 	elif args.algorithm == 'Approx':
 		best_sol, best_route, trace = MST(distance_matrix, float(args.time))
 	elif args.algorithm == 'LS1':
-		best_sol, best_route, trace = SAa(distance_matrix, float(args.time), args.seed)
+		best_sol, best_route, trace = SA(distance_matrix, float(args.time), args.seed)
 		outname += '_{}'.format(args.seed)
 	elif args.algorithm == 'LS2':
 		best_sol, best_route, trace = RLS(distance_matrix, float(args.time), args.seed)
