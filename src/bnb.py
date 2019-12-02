@@ -1,6 +1,8 @@
 from queue import LifoQueue
 import time
+import numpy as np
 import src.adjMat as adjMat
+
 
 
 
@@ -20,20 +22,20 @@ class Node:
 class BnB:
 	def __init__(self,instance,limit):
 
-		self.dist = adjMat.read_data(instance)
+		self.dist = instance
 		self.INF = 99999999
 
-		self.output_solfile_name = 'Output/' + instance + "_BnB_" + str(limit) + ".sol"
-		self.output_tracefile_name = 'Output/' + instance + "_BnB_" + str(limit) + ".trace"
+		# self.output_solfile_name = 'Output/' + instance + "_BnB_" + str(limit) + ".sol"
+		# self.output_tracefile_name = 'Output/' + instance + "_BnB_" + str(limit) + ".trace"
 
 		self.n = len(self.dist)
-		for i in range(self.n):
-			self.dist[i][i] = self.INF
+		# for i in range(self.n):
+		# 	self.dist[i][i] = self.INF
 		self.pq = LifoQueue()
 		self.up = 0
 		self.low = 0
 
-		self.limit = limit #time limit
+		self.limit = float(limit) #time limit
 		if limit == 0:
 			self.is_limited = False
 		else:
@@ -43,6 +45,9 @@ class BnB:
 
 		self.dfs_visited = [False] * self.n
 		self.dfs_visited[0] = True
+		self.best_solution = self.INF
+		self.best_route = [0]
+
 
 
 	def dfs(self,u, k, l):
@@ -66,10 +71,11 @@ class BnB:
 
 	def get_low(self):
 		for i in range(self.n):
-			temp = self.dist[i].copy()
-			temp.sort()
+			# temp = self.dist[i].copy()
+			# temp.sort()
+			temp = self.dist[i]
 			# print("%s"%(temp[0]))
-			self.low = self.low + temp[0] + temp[1]
+			self.low = self.low + np.partition(temp, 1)[1] + np.partition(temp, 2)[2]
 		self.low = self.low / 2
 
 
@@ -137,6 +143,9 @@ class BnB:
 					print(str(ans) + str(printlist) + str(time.time() - self.start_time))
 					self.trace.append([time.time() - self.start_time,ans])
 					best_path = tmp
+					self.best_route = printlist
+					self.best_solution = ans
+
 
 
 				if ans <= tmp.lb:
@@ -170,22 +179,22 @@ class BnB:
 		#best_path.listc.append(p)
 		return ret, best_path
 
-	def write_file(self, solution_list, solution_qual):
-		detailed_list = []
-		for i in range(len(solution_list)-1):
-			s_line = str(solution_list[i]) + ' ' + str(solution_list[i+1]) +' '+ str(self.dist[i][i+1])
-			detailed_list.append(s_line)
-			#print(s_line)
-
-		with open(self.output_solfile_name, 'w') as f:
-			f.write(solution_qual + '\n')
-			for item in detailed_list:
-				f.write(item + '\n')
-
-		with open(self.output_tracefile_name, 'w') as f:
-			for item in self.trace:
-				s_line = str(round(item[0],2)) + ', ' + str(item[1])
-				f.write(s_line + '\n')
+	# def write_file(self, solution_list, solution_qual):
+	# 	detailed_list = []
+	# 	for i in range(len(solution_list)-1):
+	# 		s_line = str(solution_list[i]) + ' ' + str(solution_list[i+1]) +' '+ str(self.dist[i][i+1])
+	# 		detailed_list.append(s_line)
+	# 		#print(s_line)
+	#
+	# 	with open(self.output_solfile_name, 'w') as f:
+	# 		f.write(solution_qual + '\n')
+	# 		for item in detailed_list:
+	# 			f.write(item + '\n')
+	#
+	# 	with open(self.output_tracefile_name, 'w') as f:
+	# 		for item in self.trace:
+	# 			s_line = str(round(item[0],2)) + ', ' + str(item[1])
+	# 			f.write(s_line + '\n')
 
 
 
@@ -206,7 +215,7 @@ class BnB:
 		#for i in list1:
 		#	print(i , end = ' > ')
 		#print("\n runtime: %s" % (end - start))
-		self.write_file(list1,str(sumpath))
+		# self.write_file(list1,str(sumpath))
 
 if __name__ == "__main__":
 	#instance_list = ['Cincinnati','UKansasState','Berlin','Atlanta','Boston','Champaign','Denver','NYC','Philadelphia','Roanoke','SanFrancisco','Toronto','UMissouri']
