@@ -1,11 +1,6 @@
 from queue import LifoQueue
 import time
 import numpy as np
-import src.adjMat as adjMat
-
-
-
-
 
 class Node:
 	def __init__(self,n):
@@ -143,7 +138,7 @@ class BnB:
 					opt_so_far = ans
 					printlist = tmp.listc
 					printlist.append(p)
-					print(str(ans) + str(printlist) + str(time.time() - self.start_time))
+					# print(str(ans) + str(printlist) + str(time.time() - self.start_time))
 					self.trace.append([time.time() - self.start_time,ans])
 					best_path = tmp
 					self.best_route = printlist
