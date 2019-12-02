@@ -34,6 +34,8 @@ class BnB:
 		self.pq = LifoQueue()
 		self.up = 0
 		self.low = 0
+		self.isfirst = True
+
 
 		self.limit = float(limit) #time limit
 		if limit == 0:
@@ -130,6 +132,7 @@ class BnB:
 			#print(str(tmp))
 			#print(self.up)
 			if tmp.k == self.n - 1: # Is a candidate
+				self.isfirst = False
 				p = 0
 				for i in range(self.n):
 					if tmp.visited[i] == False:
@@ -169,53 +172,24 @@ class BnB:
 					next_node.listc.append(i)
 					next_node.visited = tmp.visited.copy()
 					next_node.visited[i] = True;
-					next_node.lb = self.get_lb(next_node);
+					if not self.isfirst:
+						next_node.lb = self.get_lb(next_node);
+					else:
+						next_node.lb = 0
 					if not next_node.lb >= self.up:
 						self.pq.put(next_node)
 
-			#print(next_node.listc)
-
-
-		#best_path.listc.append(p)
 		return ret, best_path
-
-	# def write_file(self, solution_list, solution_qual):
-	# 	detailed_list = []
-	# 	for i in range(len(solution_list)-1):
-	# 		s_line = str(solution_list[i]) + ' ' + str(solution_list[i+1]) +' '+ str(self.dist[i][i+1])
-	# 		detailed_list.append(s_line)
-	# 		#print(s_line)
-	#
-	# 	with open(self.output_solfile_name, 'w') as f:
-	# 		f.write(solution_qual + '\n')
-	# 		for item in detailed_list:
-	# 			f.write(item + '\n')
-	#
-	# 	with open(self.output_tracefile_name, 'w') as f:
-	# 		for item in self.trace:
-	# 			s_line = str(round(item[0],2)) + ', ' + str(item[1])
-	# 			f.write(s_line + '\n')
-
-
-
-
-
 
 	def main(self):
 
 		start = time.time()
 		sumpath, node = self.solve()
 		end = time.time()
-		#print("result:")
-		#print(sumpath)
 		if node is not None:
 			list1 = node.listc.copy()
 		else:
 			list1 = []
-		#for i in list1:
-		#	print(i , end = ' > ')
-		#print("\n runtime: %s" % (end - start))
-		# self.write_file(list1,str(sumpath))
 
 if __name__ == "__main__":
 	#instance_list = ['Cincinnati','UKansasState','Berlin','Atlanta','Boston','Champaign','Denver','NYC','Philadelphia','Roanoke','SanFrancisco','Toronto','UMissouri']
