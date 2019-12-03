@@ -44,14 +44,14 @@ class BnB:
 	def dfs(self,u, k, l):
 		if k == self.n - 1:
 			return (l + self.dist[u][0])
-		minlen = self.INF
+		mlength = self.INF
 		p = 0
 		for i in range(self.n):
-			if self.dfs_visited[i] == False and minlen > self.dist[u][i]:
-				minlen = self.dist[u][i]
+			if self.dfs_visited[i] == False and mlength > self.dist[u][i]:
+				mlength = self.dist[u][i]
 				p = i
 		self.dfs_visited[p] = True
-		return self.dfs(p, k + 1, l + minlen)
+		return self.dfs(p, k + 1, l + mlength)
 
 
 	def get_up(self):
