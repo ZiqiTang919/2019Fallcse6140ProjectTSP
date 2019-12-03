@@ -1,6 +1,9 @@
 Authors            : Xinyi Zhang, Jingyi Li, Yuxin Zhou, Ziqi Tang
+
 Created            : November 1, 2019
+
 Last Modified   : December 3, 2019
+
 Affiliation          : Georgia Institute of Technology
 
 Description
@@ -41,13 +44,21 @@ Each line has three components (space split): NODE_ID  X_COORD  and  Y_COORD
 The file should be like this:
 
 NAME: Atlanta
+
 COMMENT: 20 locations in Atlanta
+
 DIMENSION: 20
+
 EDGE_WEIGHT_TYPE: EUC_2D
-NODE_COORD_SECTION
+
+]NODE_COORD_SECTION
+
 1 33665568.000000 -84422070.000000
+
 2 33764940.000000 -84371819.000000
+
 3 33770889.000000 -84358622.000000
+
 ...
 
 
