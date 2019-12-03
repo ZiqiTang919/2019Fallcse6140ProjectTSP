@@ -1,19 +1,14 @@
-import sys
-from time import time
-from collections import defaultdict
-#from util import *
+# Introduce Algorithm
+# MST Approximation algorithm will use MST to find a tree which has the min cost and contains all of the vertices.
+# Then we could use the DFS to find the path of MST tree
 
 # Reference, the DFS and MST are reference from https://www.geeksforgeeks.org/prims-minimum-spanning-tree-mst-greedy-algo-5/
 # and geeksforgeeks.org/depth-first-search-or-dfs-for-a-graph/
 
-# This part, we implement a MST to get a tree, which connects all
-# vertices in G to be together
+import sys
+from time import time
+from collections import defaultdict
 
-# def find_MST():
-
-# MST Approximation algorithm is an Approximation Algorithm with a ratio of 2.
-# MST Approximation algorithm will use MST to find a tree which has the min cost and contains all of the vertices.
-# Then we could use the DFS to find the path of the MST tree
 class Graph_DFS(): 
   
     def __init__(self): 
@@ -119,6 +114,7 @@ def MST(distance_array, cutoff_time, seed=None):
 
     #trace = time() - start_time
     #trace = float("%0.2f" % (trace))
+    
     # The MST Approximation algorithm running time in seconds
     trace = [[time() - start_time, cost]]
     #print(cost, tree.graph_path, trace)
