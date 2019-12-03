@@ -1,51 +1,18 @@
+# main entry of the program
+# run the specific algorithm on the given dataset and write running results to outputs
+
 import argparse
 import sys
+import os
 
-import numpy as np
-from RLS import RLS
-from scipy.spatial.distance import pdist
-from scipy.spatial.distance import squareform
-import src.bnb as bnb
-
-def read_data(filename):
-	file = open(filename, 'r')
-	line = file.readline()
-	name = line.split(' ')[-1][:-1]
-	for _ in range(4):
-		file.readline()
-	
-	X = []
-	ids = []
-	while True:
-		line = file.readline()
-		if line.startswith('EOF'):
-			break
-		line = line.split(' ')
-		x = float(line[1])
-		y = float(line[2])
-		X.append([x, y])
-
-	return name, np.round(squareform(pdist(X, 'euclidean')) + 1e-9)
-
-def write_solution(filename, sol, route):
-	file = open(filename, 'w')
-	file.write(str(int(sol)) + '\n')
-	file.write(','.join([str(v) for v in route])) 
-
-def write_trace(filename, trace):
-	file = open(filename, 'w')
-	for row in trace:
-		file.write(str(row[0]) + ',' + str(int(row[1])) + '\n') 
-
-def BNB(distance_matrix, time):
-	return None, None, None
-def MST(distance_matrix, time):
-	return None, None, None
-def SA(distance_matrix, time, seed):
-	return None, None, None
-
+from util import read_data, write_solution, write_trace
+from MST import MST
+from RHC import RHC
+from SA import SA
+from BnB import BnB
 
 if __name__ == "__main__":
+	# parse command line arguments
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-inst", dest="filename", required=True)
 	parser.add_argument("-alg", dest="algorithm", required=True)
@@ -54,32 +21,37 @@ if __name__ == "__main__":
 
 	args = parser.parse_args()
 
+	# compute distance matrix from the input file
 	name, distance_matrix = read_data(args.filename)
 	outname = '{}_{}_{}'.format(name, args.algorithm, args.time)
 
+	# run the specific algorithm
 	if args.algorithm == 'BnB':
-		bnb_obj = bnb.BnB(distance_matrix, args.time)
+		bnb_obj = BnB(distance_matrix, float(args.time))
 		bnb_obj.main()
 		best_sol = bnb_obj.best_solution
 		best_route = bnb_obj.best_route
 		trace = bnb_obj.trace
 	elif args.algorithm == 'Approx':
-		best_sol, best_route, trace = MST(distance_matrix, args.time)
+		best_sol, best_route, trace = MST(distance_matrix, float(args.time))
 	elif args.algorithm == 'LS1':
-		best_sol, best_route, trace = SA(distance_matrix, args.time, args.seed)
+		best_sol, best_route, trace = SA(distance_matrix, float(args.time), args.seed)
 		outname += '_{}'.format(args.seed)
 	elif args.algorithm == 'LS2':
-		best_sol, best_route, trace = RLS(distance_matrix, args.time, args.seed)
+		best_sol, best_route, trace = RHC(distance_matrix, float(args.time), args.seed)
 		outname += '_{}'.format(args.seed)
 	else:
 		sys.exit('wrong format!')
 
-	# best_sol = 1000
-	# best_route = [1,2,3,4,5]
-	# trace = [[10, 1111], [50, 1100], [100, 1000]]
+	# create output directory
+	out_dir_path = 'output/{}/'.format(args.algorithm)
+	if not os.path.exists(out_dir_path):
+		os.makedirs(out_dir_path)
 
-	write_solution(outname+'.sol', best_sol, best_route)
-	write_trace(outname+'.trace', trace)
+	# write results to outputs
+	write_solution(out_dir_path+outname+'.sol', best_sol, best_route)
+	write_trace(out_dir_path+outname+'.trace', trace)
+
 
 
 
