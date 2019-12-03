@@ -1,11 +1,6 @@
 from queue import LifoQueue
 import time
 import numpy as np
-import src.adjMat as adjMat
-
-
-
-
 
 class Node:
 	def __init__(self,n):
@@ -24,13 +19,7 @@ class BnB:
 
 		self.dist = instance
 		self.INF = 99999999
-
-		# self.output_solfile_name = 'Output/' + instance + "_BnB_" + str(limit) + ".sol"
-		# self.output_tracefile_name = 'Output/' + instance + "_BnB_" + str(limit) + ".trace"
-
 		self.n = len(self.dist)
-		# for i in range(self.n):
-		# 	self.dist[i][i] = self.INF
 		self.pq = LifoQueue()
 		self.up = 0
 		self.low = 0
@@ -67,16 +56,12 @@ class BnB:
 
 	def get_up(self):
 
-		#self.up = self.dfs(0, 0, 0) * 2
 		self.up = self.INF
 
 
 	def get_low(self):
 		for i in range(self.n):
-			# temp = self.dist[i].copy()
-			# temp.sort()
 			temp = self.dist[i]
-			# print("%s"%(temp[0]))
 			self.low = self.low + np.partition(temp, 1)[1] + np.partition(temp, 2)[2]
 		self.low = self.low / 2
 
@@ -129,8 +114,6 @@ class BnB:
 			if time.time() - self.start_time > self.limit and self.is_limited == True:
 				break
 			tmp = self.pq.get()
-			#print(str(tmp))
-			#print(self.up)
 			if tmp.k == self.n - 1: # Is a candidate
 				self.isfirst = False
 				p = 0
