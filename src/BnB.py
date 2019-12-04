@@ -11,9 +11,9 @@ class Node:
 		self.k = 1
 		self.sumv = 0
 		self.lb = 0
-		self.listc = []
+		self.curlist = []
 	def __str__(self):
-		return 's:' + str(self.start) + "|" + 'e:' + str(self.e) + "|" 'k:' + str(self.k) + "|" + 'cost:' + str(self.sumv) + "|" 'path:' + str(self.listc)
+		return 's:' + str(self.start) + "|" + 'e:' + str(self.e) + "|" 'k:' + str(self.k) + "|" + 'cost:' + str(self.sumv) + "|" 'path:' + str(self.curlist)
 
 # define a class Bnb to store the path and cost
 class BnB:
@@ -58,6 +58,7 @@ class BnB:
 		min1 = self.INF
 		min2 = self.INF
 
+
 		for i in range(self.n):
 			if p.visited[i] == False and min1 > self.dist[i][p.start]:
 				min1 = self.dist[i][p.start]
@@ -93,39 +94,39 @@ class BnB:
 		node.e = 0
 		node.k = 1
 		node.visited = [False] * self.n
-		node.listc.append(0)
+		node.curlist.append(0)
 		for i in range(self.n):
 			node.visited[i] == False
 		node.visited[0] = True
 		node.sumv = 0
 		node.lb = self.low
 		remine = self.INF
-		opt_so_far = self.INF
+		optimalsol = self.INF
 		self.pq.put(node)
 		best_path = None
 		while self.pq.qsize() != 0:
 			if time.time() - self.start_time > self.limit and self.is_limited == True:
 				break
-			tmp = self.pq.get()
-			if tmp.k == self.n - 1: # Is a candidate
+			tmpe = self.pq.get()
+			if tmpe.k == self.n - 1: # Is a candidate
 				self.isfirst = False
 				p = 0
 				for i in range(self.n):
-					if tmp.visited[i] == False:
+					if tmpe.visited[i] == False:
 						p = i
 						break
-				ans = tmp.sumv + self.dist[tmp.start][p] + self.dist[p][tmp.e]
-				if ans < opt_so_far:
-					opt_so_far = ans
-					printlist = tmp.listc
+				ans = tmpe.sumv + self.dist[tmpe.start][p] + self.dist[p][tmpe.e]
+				if ans < optimalsol:
+					optimalsol = ans
+					printlist = tmpe.curlist
 					printlist.append(p)
 					# print(str(ans) + str(printlist) + str(time.time() - self.start_time))
 					self.trace.append([time.time() - self.start_time,ans])
-					best_path = tmp
+					best_path = tmpe
 					self.best_route = printlist
 					self.best_solution = ans
 
-				if ans <= tmp.lb:
+				if ans <= tmpe.lb:
 					retmine = min(ans, remine)
 					break
 				else:
@@ -135,15 +136,15 @@ class BnB:
 					continue
 
 			for i in range(self.n):
-				if tmp.visited[i] == False:
+				if tmpe.visited[i] == False:
 					next_node = Node(self.n)
-					next_node.start = tmp.start
-					next_node.sumv = tmp.sumv + self.dist[tmp.e][i]
+					next_node.start = tmpe.start
+					next_node.sumv = tmpe.sumv + self.dist[tmpe.e][i]
 					next_node.e = i
-					next_node.k = tmp.k + 1
-					next_node.listc = tmp.listc.copy()
-					next_node.listc.append(i)
-					next_node.visited = tmp.visited.copy()
+					next_node.k = tmpe.k + 1
+					next_node.curlist = tmpe.curlist.copy()
+					next_node.curlist.append(i)
+					next_node.visited = tmpe.visited.copy()
 					next_node.visited[i] = True;
 					if not self.isfirst:
 						next_node.lb = self.get_lb(next_node);
@@ -160,7 +161,7 @@ class BnB:
 		sumpath, node = self.solve()
 		end = time.time()
 		if node is not None:
-			list1 = node.listc.copy()
+			list1 = node.curlist.copy()
 		else:
 			list1 = []
 
