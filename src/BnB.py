@@ -85,7 +85,6 @@ class BnB:
 # if the lower bound is better than the current upper bound, continue this branch and go to the next node
 # then update the upper bound to current result
 # keep go through all the possible trace and update the upper bound, until all the possible trace are been considered
-
 	def solve(self):
 		self.get_up()
 		self.get_low()
