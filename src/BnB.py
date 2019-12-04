@@ -2,7 +2,7 @@ from queue import LifoQueue
 import time
 import numpy as np
 
-# define a class node to store the attribute of one node
+# define a class node to store the attribute of the solution to current point
 class Node:
 	def __init__(self,n):
 		self.visited = [False] * n
