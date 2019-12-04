@@ -2,6 +2,7 @@ from queue import LifoQueue
 import time
 import numpy as np
 
+# define a class node to store the attribute of one node
 class Node:
 	def __init__(self,n):
 		self.visited = [False] * n
@@ -14,6 +15,7 @@ class Node:
 	def __str__(self):
 		return 's:' + str(self.start) + "|" + 'e:' + str(self.e) + "|" 'k:' + str(self.k) + "|" + 'cost:' + str(self.sumv) + "|" 'path:' + str(self.listc)
 
+# define a class Bnb to store the path and cost
 class BnB:
 	def __init__(self,instance,limit):
 
@@ -24,7 +26,6 @@ class BnB:
 		self.up = 0
 		self.low = 0
 		self.isfirst = True
-
 
 		self.limit = float(limit) #time limit
 		if limit == 0:
@@ -40,42 +41,27 @@ class BnB:
 		self.best_route = [0]
 
 
-
-	def dfs(self,u, k, l):
-		if k == self.n - 1:
-			return (l + self.dist[u][0])
-		mlength = self.INF
-		p = 0
-		for i in range(self.n):
-			if self.dfs_visited[i] == False and mlength > self.dist[u][i]:
-				mlength = self.dist[u][i]
-				p = i
-		self.dfs_visited[p] = True
-		return self.dfs(p, k + 1, l + mlength)
-
-
+# funciton to calculate the current best cost
 	def get_up(self):
 
 		self.up = self.INF
 
-
+# function to get the lower bound of current branch
 	def get_low(self):
 		for i in range(self.n):
 			temp = self.dist[i]
 			self.low = self.low + np.partition(temp, 1)[1] + np.partition(temp, 2)[2]
 		self.low = self.low / 2
 
-
 	def get_lb(self,p):
-		ret = p.sumv * 2
+		remine = p.sumv * 2
 		min1 = self.INF
 		min2 = self.INF
 
 		for i in range(self.n):
 			if p.visited[i] == False and min1 > self.dist[i][p.start]:
 				min1 = self.dist[i][p.start]
-		ret = ret + min1
-
+		remine = remine + min1
 
 		for j in range(self.n):
 			if p.visited[j] == False and min2 > self.dist[p.e][j]:
@@ -88,9 +74,16 @@ class BnB:
 					min1 = self.dist[i][j] if min1 > self.dist[i][j] else min1
 				for m in range(self.n):
 					min2 = self.dist[i][m] if min2 > self.dist[m][i] else min2
-				ret = ret + min1 + min2
-		return (ret + 1) / 2
+				remine = remine + min1 + min2
+		return (remine + 1) / 2
 
+# main function to calculate the best cost and the corresponding trace
+# everytime check the lower bound of the current branch
+# if the lower bound is worse than the current upper bound, cut the branch
+# do not update the upper bound
+# if the lower bound is better than the current upper bound, continue this branch and go to the next node
+# then update the upper bound to current result
+# keep go through all the possible trace and update the upper bound, until all the possible trace are been considered
 
 	def solve(self):
 		self.get_up()
@@ -106,7 +99,7 @@ class BnB:
 		node.visited[0] = True
 		node.sumv = 0
 		node.lb = self.low
-		ret = self.INF
+		remine = self.INF
 		opt_so_far = self.INF
 		self.pq.put(node)
 		best_path = None
@@ -132,17 +125,14 @@ class BnB:
 					self.best_route = printlist
 					self.best_solution = ans
 
-
-
 				if ans <= tmp.lb:
-					ret = min(ans, ret)
+					retmine = min(ans, remine)
 					break
 				else:
 					self.up = min(ans, self.up)
-					ret = min(ret, ans)
+					remine = min(remine, ans)
 
 					continue
-
 
 			for i in range(self.n):
 				if tmp.visited[i] == False:
@@ -162,10 +152,10 @@ class BnB:
 					if not next_node.lb >= self.up:
 						self.pq.put(next_node)
 
-		return ret, best_path
+		return remine, best_path
 
+#main function to run the code
 	def main(self):
-
 		start = time.time()
 		sumpath, node = self.solve()
 		end = time.time()
